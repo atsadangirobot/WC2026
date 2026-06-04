@@ -324,13 +324,14 @@ function load(key) { try { return JSON.parse(localStorage.getItem('wc2026_' + ke
 // API
 // ============================================================
 async function api(params) {
+  // Apps Script ไม่รองรับ CORS preflight จาก POST+JSON
+  // แก้: encode payload เป็น base64 ส่งผ่าน GET query string แทน
   try {
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(params),
-    });
-    return await res.json();
+    const encoded = encodeURIComponent(btoa(unescape(encodeURIComponent(JSON.stringify(params)))));
+    const url = API_URL + '?payload=' + encoded;
+    const res = await fetch(url, { redirect: 'follow' });
+    const text = await res.text();
+    return JSON.parse(text);
   } catch(e) {
     return { ok: false, error: 'เชื่อมต่อไม่ได้: ' + e.message };
   }
