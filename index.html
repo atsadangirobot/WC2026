@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WC2026 ทายสกอร์</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#f4f5f7;--card:#fff;--border:#e5e7eb;--border2:#d1d5db;
+  --text:#111827;--muted:#6b7280;--faint:#9ca3af;
+  --green:#059669;--green-bg:#ecfdf5;--green-text:#065f46;
+  --blue:#2563eb;--blue-bg:#eff6ff;--blue-text:#1e40af;
+  --red:#dc2626;--red-bg:#fef2f2;--red-text:#991b1b;
+  --amber:#d97706;--amber-bg:#fffbeb;--amber-text:#92400e;
+  --gray-bg:#f9fafb;--gray-text:#374151;
+  --nav:#111827;--gold:#f59e0b;
+  --radius:12px;--radius-sm:8px;
+}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);font-size:15px;min-height:100vh}
+
+/* NAV */
+nav{background:var(--nav);position:sticky;top:0;z-index:100;border-bottom:2px solid rgba(245,158,11,0.4)}
+.nav-inner{max-width:680px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;padding:0 12px;height:50px}
+.nav-logo{color:var(--gold);font-weight:700;font-size:15px;display:flex;align-items:center;gap:6px}
+.nav-tabs{display:flex;gap:2px;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.nav-tabs::-webkit-scrollbar{display:none}
+.tab-btn{background:none;border:none;color:rgba(255,255,255,0.55);padding:6px 10px;border-radius:8px;font-size:13px;cursor:pointer;white-space:nowrap;transition:.15s}
+.tab-btn:hover{color:#fff;background:rgba(255,255,255,0.08)}
+.tab-btn.active{color:var(--gold);background:rgba(245,158,11,0.15);font-weight:600}
+.nav-user{display:flex;align-items:center;gap:8px;margin-left:8px}
+.nav-name{font-size:12px;color:rgba(255,255,255,0.6);white-space:nowrap}
+.nav-logout{background:none;border:none;color:rgba(255,255,255,0.35);font-size:12px;cursor:pointer;padding:4px}
+.nav-logout:hover{color:rgba(255,255,255,0.7)}
+
+/* MAIN */
+main{max-width:680px;margin:0 auto;padding:16px 12px 32px}
+
+/* CARD */
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:10px}
+
+/* LOGIN */
+#screen-login{min-height:100vh;background:var(--nav);display:flex;align-items:center;justify-content:center;padding:16px}
+.login-box{background:var(--card);border-radius:var(--radius);padding:32px 28px;width:100%;max-width:360px}
+.login-trophy{font-size:44px;text-align:center;margin-bottom:12px}
+.login-title{font-size:20px;font-weight:700;text-align:center;color:var(--text);margin-bottom:4px}
+.login-sub{font-size:13px;color:var(--muted);text-align:center;margin-bottom:24px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:13px;font-weight:500;color:var(--gray-text);margin-bottom:5px}
+.field input{width:100%;padding:10px 12px;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:15px;color:var(--text);background:#fff;outline:none;transition:.15s}
+.field input:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(5,150,105,.1)}
+.btn-primary{width:100%;padding:11px;background:var(--green);color:#fff;border:none;border-radius:var(--radius-sm);font-size:15px;font-weight:600;cursor:pointer;transition:.15s;margin-top:4px}
+.btn-primary:hover{background:#047857}
+.btn-primary:disabled{opacity:.5;cursor:default}
+.login-error{color:var(--red);font-size:13px;text-align:center;margin-top:10px;min-height:18px}
+
+/* SECTION LABEL */
+.section-label{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.section-label span{font-size:11px;font-weight:700;color:var(--faint);text-transform:uppercase;letter-spacing:.6px;white-space:nowrap}
+.section-label::after{content:'';flex:1;height:1px;background:var(--border)}
+
+/* LEADERBOARD */
+.lb-header-row{display:grid;grid-template-columns:32px 36px 1fr 50px 46px 46px;gap:4px;align-items:center;padding:8px 14px;background:var(--gray-bg);border-bottom:1px solid var(--border);font-size:11px;font-weight:600;color:var(--faint);text-transform:uppercase;letter-spacing:.4px}
+.lb-row{display:grid;grid-template-columns:32px 36px 1fr 50px 46px 46px;gap:4px;align-items:center;padding:11px 14px;border-bottom:1px solid #f3f4f6;transition:.1s}
+.lb-row:last-child{border-bottom:none}
+.lb-row.me{background:rgba(245,158,11,.06)}
+.lb-row .rank{font-size:14px;font-weight:700;color:var(--faint)}
+.lb-row .rank.r1{color:#f59e0b}
+.lb-row .rank.r2{color:#94a3b8}
+.lb-row .rank.r3{color:#b45309}
+.avatar{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;overflow:hidden;flex-shrink:0}
+.lb-name{font-size:14px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-pts{font-size:16px;font-weight:700;text-align:right}
+.lb-exact{font-size:13px;font-weight:600;color:var(--green);text-align:center}
+.lb-pen{font-size:13px;color:var(--red);text-align:center}
+.col-c{text-align:center}
+
+/* MATCHES */
+.match-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden}
+.match-meta{display:flex;align-items:center;justify-content:space-between;padding:8px 14px 0}
+.match-info{font-size:11px;color:var(--faint)}
+.badge{font-size:11px;padding:2px 9px;border-radius:20px;font-weight:500}
+.badge-open{background:var(--green-bg);color:var(--green-text)}
+.badge-lock{background:#fff7ed;color:#c2410c}
+.badge-done{background:var(--gray-bg);color:var(--faint)}
+.match-teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:8px;padding:12px 16px 8px}
+.team-block{text-align:center}
+.team-flag{font-size:30px;line-height:1}
+.team-name{font-size:13px;font-weight:600;color:var(--text);margin-top:3px}
+.vs-block{text-align:center;min-width:64px}
+.vs-text{font-size:11px;color:var(--faint);letter-spacing:.5px}
+.actual-score{font-size:22px;font-weight:800;color:var(--text);letter-spacing:-1px}
+.pred-row{display:flex;align-items:center;justify-content:center;gap:10px;padding:8px 14px 12px;background:var(--gray-bg);border-top:1px solid var(--border)}
+.pred-label{font-size:12px;color:var(--muted)}
+.score-inp{width:44px;height:38px;text-align:center;font-size:17px;font-weight:700;border:1px solid var(--border2);border-radius:var(--radius-sm);background:#fff;color:var(--text);outline:none}
+.score-inp:focus{border-color:var(--green)}
+.score-dash{color:var(--faint);font-size:18px;font-weight:300}
+.btn-submit{padding:7px 16px;background:var(--green);color:#fff;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer;transition:.15s}
+.btn-submit:hover{background:#047857}
+.btn-submit:disabled{opacity:.4;cursor:default}
+.pred-result{display:flex;align-items:center;gap:8px;padding:8px 14px 10px;background:var(--gray-bg);border-top:1px solid var(--border)}
+.pred-mine{font-size:12px;color:var(--muted)}
+.pred-mine strong{color:var(--text)}
+.result-badge{font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px}
+.rb-exact{background:var(--green-bg);color:var(--green-text)}
+.rb-correct{background:var(--blue-bg);color:var(--blue-text)}
+.rb-wrong{background:var(--gray-bg);color:var(--gray-text)}
+.rb-rev{background:var(--red-bg);color:var(--red-text)}
+.no-pred{font-size:12px;color:var(--faint);text-align:center;padding:8px 14px 10px;background:var(--gray-bg);border-top:1px solid var(--border)}
+
+/* CHAMPION */
+.champ-rounds{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}
+.round-card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:10px;text-align:center}
+.round-card.active{border-color:#6ee7b7;background:var(--green-bg)}
+.round-label{font-size:11px;color:var(--muted);margin-bottom:2px}
+.round-pts{font-size:18px;font-weight:800;color:var(--green)}
+.round-date{font-size:10px;color:var(--faint);margin-top:2px}
+.locked-pick{background:var(--blue-bg);border:1px solid #bfdbfe;border-radius:var(--radius-sm);padding:12px;text-align:center;font-size:14px;color:var(--blue-text);margin-bottom:14px}
+.teams-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:12px}
+.team-btn{border:1px solid var(--border2);border-radius:var(--radius-sm);padding:8px 4px;text-align:center;cursor:pointer;background:#fff;transition:.15s}
+.team-btn:hover{border-color:var(--gold);background:rgba(245,158,11,.05)}
+.team-btn.selected{border-color:var(--gold);background:rgba(245,158,11,.1);border-width:2px}
+.team-btn .t-flag{font-size:22px}
+.team-btn .t-name{font-size:10px;color:var(--muted);margin-top:3px;line-height:1.2}
+.champ-footer{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.champ-sel{font-size:13px;color:var(--muted)}
+.btn-gold{padding:9px 20px;background:var(--gold);color:#fff;border:none;border-radius:var(--radius-sm);font-size:14px;font-weight:700;cursor:pointer;transition:.15s}
+.btn-gold:hover{background:var(--amber)}
+.btn-gold:disabled{opacity:.4;cursor:default}
+
+/* RULES */
+.rules-section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden}
+.rules-head{padding:10px 14px;background:var(--gray-bg);border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--text)}
+.rule-row{display:flex;align-items:center;gap:12px;padding:11px 14px;border-bottom:1px solid #f3f4f6}
+.rule-row:last-child{border-bottom:none}
+.rule-pts{font-size:13px;font-weight:700;min-width:38px;text-align:center;padding:3px 8px;border-radius:6px}
+.rule-txt{font-size:13px;color:var(--text)}
+
+/* ADMIN */
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:14px}
+.stat-box{background:var(--card);border:1px solid var(--border);border-radius:var(--radius-sm);padding:12px 14px}
+.stat-label{font-size:12px;color:var(--muted)}
+.stat-val{font-size:22px;font-weight:700;color:var(--text);margin-top:2px}
+.admin-section{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);margin-bottom:10px;overflow:hidden}
+.admin-head{padding:10px 14px;background:var(--gray-bg);border-bottom:1px solid var(--border);font-size:13px;font-weight:600;color:var(--text)}
+.admin-body{padding:14px}
+.form-row{display:flex;gap:8px;flex-wrap:wrap;align-items:flex-end}
+.form-group{display:flex;flex-direction:column;gap:4px}
+.form-group label{font-size:12px;color:var(--muted)}
+.form-group select,.form-group input{padding:8px 10px;border:1px solid var(--border2);border-radius:var(--radius-sm);font-size:13px;color:var(--text);background:#fff;outline:none}
+.form-group select:focus,.form-group input:focus{border-color:var(--green)}
+.btn-action{padding:8px 16px;background:var(--green);color:#fff;border:none;border-radius:var(--radius-sm);font-size:13px;font-weight:600;cursor:pointer}
+.btn-action:hover{background:#047857}
+.btn-action:disabled{opacity:.4;cursor:default}
+.msg{font-size:12px;margin-top:8px;min-height:16px}
+.msg.ok{color:var(--green)}
+.msg.err{color:var(--red)}
+.admin-table-wrap{overflow-x:auto}
+.admin-table{width:100%;border-collapse:collapse;font-size:13px}
+.admin-table th{text-align:left;padding:8px 12px;background:var(--gray-bg);color:var(--faint);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.4px;border-bottom:1px solid var(--border)}
+.admin-table td{padding:9px 12px;border-bottom:1px solid #f3f4f6;vertical-align:middle}
+.admin-table tr:last-child td{border-bottom:none}
+.countdown{font-size:11px;color:var(--amber);font-weight:600}
+.countdown.passed{color:var(--red)}
+
+/* TOAST */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(80px);background:#1f2937;color:#fff;padding:10px 20px;border-radius:30px;font-size:13px;transition:.3s;opacity:0;z-index:999;white-space:nowrap}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* LOADER */
+.loader{display:flex;align-items:center;justify-content:center;padding:40px;color:var(--faint);font-size:14px;gap:8px}
+
+/* UTIL */
+.hidden{display:none!important}
+.screen{display:none}
+.screen.active{display:block}
+</style>
+</head>
+<body>
+
+<!-- LOGIN SCREEN (outside nav) -->
+<div id="screen-login">
+  <div class="login-box">
+    <div class="login-trophy">🏆</div>
+    <div class="login-title">WC2026 ทายสกอร์</div>
+    <div class="login-sub">เข้าสู่ระบบเพื่อเข้าร่วมเกม</div>
+    <div class="field">
+      <label>ชื่อผู้ใช้</label>
+      <input type="text" id="inp-user" placeholder="username" autocomplete="username" autocapitalize="off">
+    </div>
+    <div class="field">
+      <label>รหัสผ่าน</label>
+      <input type="password" id="inp-pass" placeholder="password" autocomplete="current-password">
+    </div>
+    <button class="btn-primary" id="btn-login" onclick="doLogin()">เข้าสู่ระบบ</button>
+    <div class="login-error" id="login-error"></div>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="app" class="hidden">
+  <nav>
+    <div class="nav-inner">
+      <div class="nav-logo">🏆 WC2026</div>
+      <div class="nav-tabs">
+        <button class="tab-btn active" data-tab="leaderboard" onclick="switchTab('leaderboard',this)">🏅 อันดับ</button>
+        <button class="tab-btn" data-tab="matches" onclick="switchTab('matches',this)">⚽ แมตช์</button>
+        <button class="tab-btn" data-tab="champion" onclick="switchTab('champion',this)">👑 แชมป์</button>
+        <button class="tab-btn" data-tab="rules" onclick="switchTab('rules',this)">📋 กติกา</button>
+        <button class="tab-btn hidden" id="tab-admin" data-tab="admin" onclick="switchTab('admin',this)">⚙️ Admin</button>
+      </div>
+      <div class="nav-user">
+        <span class="nav-name" id="nav-username"></span>
+        <button class="nav-logout" onclick="doLogout()" title="ออก">✕</button>
+      </div>
+    </div>
+  </nav>
+
+  <main>
+    <!-- LEADERBOARD -->
+    <div id="screen-leaderboard" class="screen active">
+      <div id="lb-content"><div class="loader">⏳ กำลังโหลด...</div></div>
+    </div>
+
+    <!-- MATCHES -->
+    <div id="screen-matches" class="screen">
+      <div id="matches-content"><div class="loader">⏳ กำลังโหลด...</div></div>
+    </div>
+
+    <!-- CHAMPION -->
+    <div id="screen-champion" class="screen">
+      <div id="champ-content"><div class="loader">⏳ กำลังโหลด...</div></div>
+    </div>
+
+    <!-- RULES -->
+    <div id="screen-rules" class="screen">
+      <div class="rules-section">
+        <div class="rules-head">⚽ คะแนนทายสกอร์</div>
+        <div class="rule-row"><span class="rule-pts" style="background:var(--green-bg);color:var(--green-text)">+6</span><span class="rule-txt">ทายสกอร์ถูกต้องทุกตัว</span></div>
+        <div class="rule-row"><span class="rule-pts" style="background:var(--blue-bg);color:var(--blue-text)">+3</span><span class="rule-txt">ทายผลถูก (ชนะ/เสมอ/แพ้) แต่สกอร์ไม่ตรง</span></div>
+        <div class="rule-row"><span class="rule-pts" style="background:var(--gray-bg);color:var(--gray-text)">+1</span><span class="rule-txt">ทายผลไม่ถูก (ทั่วไป)</span></div>
+        <div class="rule-row"><span class="rule-pts" style="background:var(--red-bg);color:var(--red-text)">−1</span><span class="rule-txt">ทายกลับหัว เช่น ทาย 2–1 แต่ผลออก 1–2</span></div>
+        <div class="rule-row"><span class="rule-pts" style="background:var(--gray-bg);color:var(--faint)">0</span><span class="rule-txt">ไม่ทาย หรือทายหลัง Kickoff</span></div>
+      </div>
+      <div class="rules-section">
+        <div class="rules-head">🏆 โบนัสทายแชมป์</div>
+        <div class="rule-row"><span class="rule-pts" style="background:var(--amber-bg);color:var(--amber-text)">+15</span><span class="rule-txt">ทายถูก ก่อนจบรอบ 1 (ก่อน 27 มิ.ย.)</span></div>
+        <div class="rule-row"><span class="rule-pts" style="background:var(--amber-bg);color:var(--amber-text)">+10</span><span class="rule-txt">ทายถูก ก่อนจบรอบ 2 (ก่อน 7 ก.ค.)</span></div>
+        <div class="rule-row"><span class="rule-pts" style="background:var(--amber-bg);color:var(--amber-text)">+6</span><span class="rule-txt">ทายถูก ก่อนจบรอบ 3 (ก่อน 11 ก.ค.)</span></div>
+      </div>
+      <div class="rules-section">
+        <div class="rules-head">📋 หมายเหตุ</div>
+        <div class="rule-row" style="display:block;padding:11px 14px;font-size:13px;line-height:1.7;color:var(--text)">
+          • นับเฉพาะประตูใน <strong>90 นาที + ทดเวลา</strong> ไม่รวม Extra Time และ Penalty Shootout<br>
+          • ต้องส่งคำทายก่อน Kickoff ของแต่ละนัด<br>
+          • ทายแชมป์ได้ครั้งเดียว — เปลี่ยนได้ในรอบเดิม แต่เมื่อรอบเปลี่ยนแล้วเปลี่ยนไม่ได้
+        </div>
+      </div>
+      <div class="rules-section">
+        <div class="rules-head">🥇 ตัดสินคะแนนเท่ากัน</div>
+        <div class="rule-row" style="display:block;padding:11px 14px;font-size:13px;line-height:1.9;color:var(--text)">
+          ① คะแนนรวมมากกว่าชนะ<br>
+          ② ทายสกอร์ถูก (⭐) เยอะกว่าชนะ<br>
+          ③ ติด −1 น้อยกว่าชนะ<br>
+          ④ ยังเท่ากัน → รองแชมป์ร่วม
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN -->
+    <div id="screen-admin" class="screen">
+      <div id="admin-content"><div class="loader">⏳ กำลังโหลด...</div></div>
+    </div>
+  </main>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// ============================================================
+// CONFIG — แก้ API_URL เป็น URL จาก Google Apps Script
+// ============================================================
+const API_URL = 'https://script.google.com/macros/s/AKfycbxFNngQ_zMzbMoc_LAHfVQKVAqZ_lpjI4qxFErRkcW9U8-JFUsUoR7G3Uy6fBeVPR3B/exec';
+
+const CHAMPION_DEADLINES = {
+  ROUND1: new Date('2026-06-26T23:59:00+07:00'),
+  ROUND2: new Date('2026-07-07T23:59:00+07:00'),
+  ROUND3: new Date('2026-07-11T23:59:00+07:00'),
+};
+
+const WC_TEAMS = [
+  {name:'Brazil',flag:'🇧🇷'},{name:'France',flag:'🇫🇷'},{name:'Germany',flag:'🇩🇪'},{name:'Argentina',flag:'🇦🇷'},
+  {name:'Spain',flag:'🇪🇸'},{name:'Portugal',flag:'🇵🇹'},{name:'England',flag:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'},{name:'Netherlands',flag:'🇳🇱'},
+  {name:'USA',flag:'🇺🇸'},{name:'Mexico',flag:'🇲🇽'},{name:'Canada',flag:'🇨🇦'},{name:'Morocco',flag:'🇲🇦'},
+  {name:'Japan',flag:'🇯🇵'},{name:'South Korea',flag:'🇰🇷'},{name:'Australia',flag:'🇦🇺'},{name:'Saudi Arabia',flag:'🇸🇦'},
+  {name:'Ecuador',flag:'🇪🇨'},{name:'Uruguay',flag:'🇺🇾'},{name:'Colombia',flag:'🇨🇴'},{name:'Croatia',flag:'🇭🇷'},
+  {name:'Belgium',flag:'🇧🇪'},{name:'Switzerland',flag:'🇨🇭'},{name:'Denmark',flag:'🇩🇰'},{name:'Senegal',flag:'🇸🇳'},
+  {name:'Ghana',flag:'🇬🇭'},{name:'Cameroon',flag:'🇨🇲'},{name:'Tunisia',flag:'🇹🇳'},{name:'Nigeria',flag:'🇳🇬'},
+  {name:'Iran',flag:'🇮🇷'},{name:'Poland',flag:'🇵🇱'},{name:'Serbia',flag:'🇷🇸'},{name:'Qatar',flag:'🇶🇦'},
+];
+
+const AVATAR_COLORS = [
+  ['#dbeafe','#1e40af'],['#dcfce7','#166534'],['#fef3c7','#92400e'],['#fce7f3','#9d174d'],
+  ['#ede9fe','#4c1d95'],['#ffedd5','#9a3412'],['#d1fae5','#065f46'],['#fee2e2','#991b1b'],
+  ['#e0f2fe','#075985'],['#f0fdf4','#14532d'],['#fdf4ff','#6b21a8'],['#fafafa','#374151'],
+];
+
+// ============================================================
+// STATE
+// ============================================================
+let state = {
+  user: null,
+  matches: [],
+  champPick: null,
+  kickoffTimers: [],
+  selectedTeam: null,
+  champSaved: false,
+};
+
+function save(key, val) { try { localStorage.setItem('wc2026_' + key, JSON.stringify(val)); } catch(_){} }
+function load(key) { try { return JSON.parse(localStorage.getItem('wc2026_' + key)); } catch(_){ return null; } }
+
+// ============================================================
+// API
+// ============================================================
+async function api(params) {
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(params),
+    });
+    return await res.json();
+  } catch(e) {
+    return { ok: false, error: 'เชื่อมต่อไม่ได้: ' + e.message };
+  }
+}
+
+// ============================================================
+// AUTH
+// ============================================================
+async function doLogin() {
+  const username = document.getElementById('inp-user').value.trim();
+  const password = document.getElementById('inp-pass').value;
+  const errEl = document.getElementById('login-error');
+  const btn = document.getElementById('btn-login');
+
+  if (!username || !password) { errEl.textContent = 'กรุณากรอกข้อมูลให้ครบ'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'กำลังเข้าสู่ระบบ...';
+  errEl.textContent = '';
+
+  const r = await api({ action: 'login', username, password });
+
+  btn.disabled = false;
+  btn.textContent = 'เข้าสู่ระบบ';
+
+  if (!r.ok) { errEl.textContent = r.error; return; }
+
+  state.user = r.user;
+  save('user', r.user);
+  startApp();
+}
+
+function doLogout() {
+  state.user = null;
+  save('user', null);
+  clearKickoffTimers();
+  document.getElementById('app').classList.add('hidden');
+  document.getElementById('screen-login').style.display = 'flex';
+  document.getElementById('inp-user').value = '';
+  document.getElementById('inp-pass').value = '';
+}
+
+function startApp() {
+  document.getElementById('screen-login').style.display = 'none';
+  document.getElementById('app').classList.remove('hidden');
+  document.getElementById('nav-username').textContent = state.user.displayName;
+  if (state.user.role === 'ADMIN') {
+    document.getElementById('tab-admin').classList.remove('hidden');
+  }
+  switchTab('leaderboard', document.querySelector('[data-tab="leaderboard"]'));
+}
+
+// ============================================================
+// NAV
+// ============================================================
+function switchTab(tab, btn) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById('screen-' + tab).classList.add('active');
+  loadTab(tab);
+}
+
+function loadTab(tab) {
+  if (tab === 'leaderboard') loadLeaderboard();
+  else if (tab === 'matches') loadMatches();
+  else if (tab === 'champion') loadChampion();
+  else if (tab === 'admin') loadAdmin();
+}
+
+// ============================================================
+// LEADERBOARD
+// ============================================================
+async function loadLeaderboard() {
+  const el = document.getElementById('lb-content');
+  el.innerHTML = '<div class="loader">⏳ กำลังโหลด...</div>';
+  const r = await api({ action: 'getLeaderboard' });
+  if (!r.ok) { el.innerHTML = `<div class="loader">${r.error}</div>`; return; }
+  renderLeaderboard(r.rows, el);
+}
+
+function renderLeaderboard(rows, el) {
+  const medal = {1:'🥇',2:'🥈',3:'🥉'};
+  let html = `<div class="card">
+    <div class="lb-header-row">
+      <div>#</div><div></div><div>ชื่อ</div>
+      <div class="col-c">⭐</div><div class="col-c">−1</div><div>รวม</div>
+    </div>`;
+  rows.forEach((row, i) => {
+    const [bg, fg] = AVATAR_COLORS[i % AVATAR_COLORS.length];
+    const rankClass = row.rank === 1 ? 'r1' : row.rank === 2 ? 'r2' : row.rank === 3 ? 'r3' : '';
+    const isMe = row.id === state.user.id;
+    const rankDisp = medal[row.rank] || row.rank;
+    html += `<div class="lb-row${isMe ? ' me' : ''}">
+      <div class="rank ${rankClass}">${rankDisp}</div>
+      <div><div class="avatar" style="background:${bg};color:${fg}">${row.displayName.slice(0,2)}</div></div>
+      <div class="lb-name">${row.displayName}${isMe ? ' <span style="font-size:10px;color:var(--faint)">(คุณ)</span>' : ''}</div>
+      <div class="lb-exact">${row.exactCount}</div>
+      <div class="lb-pen">${row.penaltyCount}</div>
+      <div class="lb-pts">${row.total}</div>
+    </div>`;
+  });
+  html += '</div>';
+  html += '<p style="font-size:11px;color:var(--faint);text-align:center;margin-top:6px">ตัดสิน: ① ⭐ เยอะกว่า → ② −1 น้อยกว่า → ③ รองแชมป์ร่วม</p>';
+  el.innerHTML = html;
+}
+
+// ============================================================
+// MATCHES
+// ============================================================
+async function loadMatches() {
+  const el = document.getElementById('matches-content');
+  el.innerHTML = '<div class="loader">⏳ กำลังโหลด...</div>';
+  const r = await api({ action: 'getMatches', userId: state.user.id });
+  if (!r.ok) { el.innerHTML = `<div class="loader">${r.error}</div>`; return; }
+  state.matches = r.matches;
+  setupKickoffTimers();
+  renderMatches(el);
+}
+
+function renderMatches(el) {
+  const now = new Date();
+  const upcoming = state.matches.filter(m => !m.locked && new Date(m.kickoffAt) > now);
+  const locked = state.matches.filter(m => m.locked && m.homeScore === null);
+  const finished = state.matches.filter(m => m.homeScore !== null).reverse();
+
+  let html = '';
+
+  if (upcoming.length) {
+    html += '<div class="section-label"><span>รับทายอยู่ (' + upcoming.length + ' นัด)</span></div>';
+    upcoming.forEach(m => { html += matchCardHTML(m); });
+  }
+  if (locked.length) {
+    html += '<div class="section-label" style="margin-top:8px"><span>รอผล (' + locked.length + ' นัด)</span></div>';
+    locked.forEach(m => { html += matchCardHTML(m); });
+  }
+  if (finished.length) {
+    html += '<div class="section-label" style="margin-top:8px"><span>จบแล้ว (' + finished.length + ' นัด)</span></div>';
+    finished.forEach(m => { html += matchCardHTML(m); });
+  }
+  if (!html) html = '<div class="loader">ยังไม่มีแมตช์</div>';
+
+  el.innerHTML = html;
+}
+
+function matchCardHTML(m) {
+  const now = new Date();
+  const kickoff = new Date(m.kickoffAt);
+  const isFinished = m.homeScore !== null;
+  const isLocked = m.locked;
+  const pred = m.myPrediction;
+
+  const dtStr = kickoff.toLocaleDateString('th-TH', {day:'numeric',month:'short'}) + ' · ' +
+    kickoff.toLocaleTimeString('th-TH', {hour:'2-digit',minute:'2-digit'});
+
+  let badge, badgeCls;
+  if (isFinished) { badge = 'จบแล้ว'; badgeCls = 'badge-done'; }
+  else if (isLocked) { badge = 'ปิดรับ'; badgeCls = 'badge-lock'; }
+  else { badge = 'รับทาย'; badgeCls = 'badge-open'; }
+
+  let scoreBlock;
+  if (isFinished) {
+    scoreBlock = `<div class="vs-text">ผลจริง</div><div class="actual-score">${m.homeScore}–${m.awayScore}</div>`;
+  } else {
+    const diffMs = kickoff - now;
+    const hrs = Math.floor(diffMs / 3600000);
+    const mins = Math.floor((diffMs % 3600000) / 60000);
+    const countdown = diffMs > 0
+      ? (hrs > 0 ? `${hrs}ช ${mins}น` : `${mins} นาที`)
+      : '';
+    scoreBlock = `<div class="vs-text">VS</div>${countdown ? `<div class="countdown" id="cd-${m.id}">${countdown}</div>` : ''}`;
+  }
+
+  let bottomHtml = '';
+  if (!isLocked && !isFinished) {
+    const ph = pred ? pred.predHome : 1;
+    const pa = pred ? pred.predAway : 1;
+    bottomHtml = `<div class="pred-row">
+      <span class="pred-label">ทายสกอร์:</span>
+      <input type="number" class="score-inp" min="0" max="20" value="${ph}" id="ph-${m.id}">
+      <span class="score-dash">–</span>
+      <input type="number" class="score-inp" min="0" max="20" value="${pa}" id="pa-${m.id}">
+      <button class="btn-submit" id="sbtn-${m.id}" onclick="submitPred('${m.id}')">
+        ${pred ? '✓ แก้ไข' : 'ส่ง'}
+      </button>
+    </div>`;
+  } else if (pred) {
+    const rb = resultBadge(pred.points);
+    bottomHtml = `<div class="pred-result">
+      <span class="pred-mine">ทายไว้: <strong>${pred.predHome}–${pred.predAway}</strong></span>
+      ${rb}
+    </div>`;
+  } else if (isLocked || isFinished) {
+    bottomHtml = `<div class="no-pred">ไม่ได้ทาย (0 คะแนน)</div>`;
+  }
+
+  return `<div class="match-card" id="mc-${m.id}">
+    <div class="match-meta">
+      <span class="match-info">${dtStr} · ${m.group || m.round}</span>
+      <span class="badge ${badgeCls}">${badge}</span>
+    </div>
+    <div class="match-teams">
+      <div class="team-block"><div class="team-flag">${m.homeFlag}</div><div class="team-name">${m.homeTeam}</div></div>
+      <div class="vs-block">${scoreBlock}</div>
+      <div class="team-block"><div class="team-flag">${m.awayFlag}</div><div class="team-name">${m.awayTeam}</div></div>
+    </div>
+    ${bottomHtml}
+  </div>`;
+}
+
+function resultBadge(pts) {
+  if (pts === null || pts === undefined) return '';
+  if (pts === 6)  return '<span class="result-badge rb-exact">⭐ สกอร์ถูก +6</span>';
+  if (pts === 3)  return '<span class="result-badge rb-correct">✓ ผลถูก +3</span>';
+  if (pts === 1)  return '<span class="result-badge rb-wrong">ผลผิด +1</span>';
+  if (pts === -1) return '<span class="result-badge rb-rev">⚠ กลับหัว −1</span>';
+  return '';
+}
+
+async function submitPred(matchId) {
+  const btn = document.getElementById('sbtn-' + matchId);
+  const ph = parseInt(document.getElementById('ph-' + matchId).value) || 0;
+  const pa = parseInt(document.getElementById('pa-' + matchId).value) || 0;
+  btn.disabled = true; btn.textContent = '...';
+
+  const r = await api({ action: 'submitPred', userId: state.user.id, matchId, predHome: ph, predAway: pa });
+
+  if (!r.ok) { showToast('❌ ' + r.error); btn.disabled = false; btn.textContent = 'ส่ง'; return; }
+  showToast('✓ บันทึกแล้ว');
+  btn.textContent = '✓ บันทึก';
+  setTimeout(() => { btn.disabled = false; btn.textContent = '✓ แก้ไข'; }, 2000);
+
+  // อัปเดต state
+  const match = state.matches.find(m => m.id === matchId);
+  if (match) { match.myPrediction = { predHome: ph, predAway: pa, points: null }; }
+}
+
+// ============================================================
+// KICKOFF TIMER (browser-based auto-lock)
+// ============================================================
+function setupKickoffTimers() {
+  clearKickoffTimers();
+  const now = new Date();
+  state.matches.forEach(m => {
+    if (m.locked) return;
+    const ms = new Date(m.kickoffAt) - now;
+    if (ms <= 0) {
+      // kickoff ผ่านแล้ว ล็อกทันที
+      autoLockMatch(m.id);
+      return;
+    }
+    // ล็อกตรงเวลา kickoff
+    const t = setTimeout(() => autoLockMatch(m.id), ms);
+    state.kickoffTimers.push(t);
+
+    // นับถอยหลัง update ทุก 60 วิ
+    if (ms < 7200000) { // แสดง countdown เฉพาะแมตช์ที่ < 2 ชม
+      const iv = setInterval(() => updateCountdown(m.id), 60000);
+      state.kickoffTimers.push(iv);
+    }
+  });
+}
+
+function clearKickoffTimers() {
+  state.kickoffTimers.forEach(t => clearTimeout(t));
+  state.kickoffTimers = [];
+}
+
+async function autoLockMatch(matchId) {
+  if (state.user?.role !== 'ADMIN') return; // เฉพาะ admin ที่เปิดค้างไว้
+  await api({ action: 'lockMatch', matchId, adminPassword: load('adminPass') });
+  // อัปเดต UI
+  const match = state.matches.find(m => m.id === matchId);
+  if (match) { match.locked = true; }
+  const mc = document.getElementById('mc-' + matchId);
+  if (mc) {
+    const badge = mc.querySelector('.badge');
+    if (badge) { badge.textContent = 'ปิดรับ'; badge.className = 'badge badge-lock'; }
+    const predRow = mc.querySelector('.pred-row');
+    if (predRow) predRow.innerHTML = '<span style="font-size:12px;color:var(--amber)">⏱ ปิดรับทายแล้ว</span>';
+  }
+  showToast('⏱ ล็อก ' + (state.matches.find(m => m.id === matchId)?.homeTeam || '') + ' vs ... แล้ว');
+}
+
+function updateCountdown(matchId) {
+  const m = state.matches.find(x => x.id === matchId);
+  if (!m) return;
+  const el = document.getElementById('cd-' + matchId);
+  if (!el) return;
+  const diffMs = new Date(m.kickoffAt) - new Date();
+  if (diffMs <= 0) { el.textContent = ''; return; }
+  const hrs = Math.floor(diffMs / 3600000);
+  const mins = Math.floor((diffMs % 3600000) / 60000);
+  el.textContent = hrs > 0 ? `${hrs}ช ${mins}น` : `${mins} นาที`;
+}
+
+// ============================================================
+// CHAMPION
+// ============================================================
+function getCurrentRound() {
+  const now = new Date();
+  if (now < CHAMPION_DEADLINES.ROUND1) return 'ROUND1';
+  if (now < CHAMPION_DEADLINES.ROUND2) return 'ROUND2';
+  if (now < CHAMPION_DEADLINES.ROUND3) return 'ROUND3';
+  return null;
+}
+
+async function loadChampion() {
+  const el = document.getElementById('champ-content');
+  el.innerHTML = '<div class="loader">⏳ กำลังโหลด...</div>';
+  const r = await api({ action: 'getChampion', userId: state.user.id });
+  if (!r.ok) { el.innerHTML = `<div class="loader">${r.error}</div>`; return; }
+  state.champPick = r.pick;
+  state.selectedTeam = r.pick?.team || null;
+  state.champSaved = !!r.pick;
+  renderChampion(el);
+}
+
+function renderChampion(el) {
+  const currentRound = getCurrentRound();
+  const pick = state.champPick;
+  const alreadyLocked = pick && pick.roundLocked !== currentRound;
+
+  const roundInfo = [
+    { key:'ROUND1', label:'ก่อนจบรอบ 1', pts:'+15', date:'ก่อน 27 มิ.ย.' },
+    { key:'ROUND2', label:'ก่อนจบรอบ 2', pts:'+10', date:'ก่อน 7 ก.ค.' },
+    { key:'ROUND3', label:'ก่อนจบรอบ 3', pts:'+6',  date:'ก่อน 11 ก.ค.' },
+  ];
+
+  let html = '<div class="champ-rounds">';
+  roundInfo.forEach(ri => {
+    const active = ri.key === currentRound ? ' active' : '';
+    html += `<div class="round-card${active}">
+      <div class="round-label">${ri.label}</div>
+      <div class="round-pts">${ri.pts}</div>
+      <div class="round-date">${ri.date}</div>
+    </div>`;
+  });
+  html += '</div>';
+
+  if (!currentRound) {
+    html += '<div style="background:var(--gray-bg);border:1px solid var(--border);border-radius:var(--radius-sm);padding:16px;text-align:center;font-size:14px;color:var(--muted)">หมดเวลาทายแชมป์แล้ว</div>';
+    if (pick) html += `<div class="locked-pick" style="margin-top:10px">ทายไว้: ${pick.teamFlag} ${pick.team} · รอผลตัดสิน</div>`;
+    el.innerHTML = html; return;
+  }
+
+  if (alreadyLocked) {
+    html += `<div class="locked-pick">ล็อกแล้ว: ${pick.teamFlag} ${pick.team} · รอบ ${pick.roundLocked === 'ROUND1' ? 1 : pick.roundLocked === 'ROUND2' ? 2 : 3} (${pick.roundLocked === 'ROUND1' ? '+15' : pick.roundLocked === 'ROUND2' ? '+10' : '+6'} ถ้าถูก)</div>`;
+    el.innerHTML = html; return;
+  }
+
+  html += '<div class="teams-grid" id="teams-grid">';
+  WC_TEAMS.forEach(t => {
+    const sel = state.selectedTeam === t.name ? ' selected' : '';
+    html += `<button class="team-btn${sel}" onclick="selectTeam('${t.name}','${t.flag}',this)">
+      <div class="t-flag">${t.flag}</div>
+      <div class="t-name">${t.name}</div>
+    </button>`;
+  });
+  html += '</div>';
+
+  const selLabel = state.selectedTeam
+    ? `เลือก: ${WC_TEAMS.find(t=>t.name===state.selectedTeam)?.flag} ${state.selectedTeam}`
+    : 'ยังไม่เลือก';
+  const savedLabel = state.champSaved ? '✓ อัปเดต' : 'ล็อกการทาย';
+
+  html += `<div class="champ-footer">
+    <span class="champ-sel" id="champ-sel-label">${selLabel}</span>
+    <button class="btn-gold" id="btn-lock-champ" ${!state.selectedTeam ? 'disabled' : ''} onclick="lockChampion()">
+      ${savedLabel}
+    </button>
+  </div>
+  <div class="msg" id="champ-msg"></div>`;
+
+  el.innerHTML = html;
+}
+
+function selectTeam(name, flag, btn) {
+  document.querySelectorAll('.team-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state.selectedTeam = name;
+  const lbl = document.getElementById('champ-sel-label');
+  if (lbl) lbl.textContent = `เลือก: ${flag} ${name}`;
+  const lockBtn = document.getElementById('btn-lock-champ');
+  if (lockBtn) lockBtn.disabled = false;
+}
+
+async function lockChampion() {
+  if (!state.selectedTeam) return;
+  const currentRound = getCurrentRound();
+  if (!currentRound) { showToast('❌ หมดเวลาทายแชมป์แล้ว'); return; }
+  const btn = document.getElementById('btn-lock-champ');
+  btn.disabled = true; btn.textContent = '...';
+
+  const team = WC_TEAMS.find(t => t.name === state.selectedTeam);
+  const r = await api({
+    action: 'submitChampion',
+    userId: state.user.id,
+    team: state.selectedTeam,
+    teamFlag: team?.flag || '',
+    roundLocked: currentRound,
+  });
+
+  const msg = document.getElementById('champ-msg');
+  if (!r.ok) {
+    msg.textContent = '❌ ' + r.error; msg.className = 'msg err';
+    btn.disabled = false; btn.textContent = state.champSaved ? '✓ อัปเดต' : 'ล็อกการทาย'; return;
+  }
+  msg.textContent = '✓ ล็อกแล้ว!'; msg.className = 'msg ok';
+  state.champSaved = true;
+  btn.textContent = '✓ อัปเดต'; btn.disabled = false;
+  showToast('✓ ล็อกทายแชมป์แล้ว');
+}
+
+// ============================================================
+// ADMIN
+// ============================================================
+async function loadAdmin() {
+  if (state.user?.role !== 'ADMIN') return;
+  const el = document.getElementById('admin-content');
+  el.innerHTML = '<div class="loader">⏳ กำลังโหลด...</div>';
+
+  // ขอ admin password ถ้ายังไม่มี
+  let adminPass = load('adminPass');
+  if (!adminPass) {
+    adminPass = prompt('กรอก Admin Password:');
+    if (!adminPass) { el.innerHTML = '<div class="loader">ยกเลิก</div>'; return; }
+    save('adminPass', adminPass);
+  }
+
+  const r = await api({ action: 'getAdminData', adminPassword: adminPass });
+  if (!r.ok) {
+    save('adminPass', null);
+    el.innerHTML = `<div class="loader">${r.error}</div>`; return;
+  }
+  renderAdmin(r.matches, r.users, adminPass, el);
+}
+
+function renderAdmin(matches, users, adminPass, el) {
+  const finished = matches.filter(m => m.homeScore !== null).length;
+  const locked = matches.filter(m => m.locked).length;
+
+  const matchOptions = matches.map(m =>
+    `<option value="${m.id}">${m.matchNo}. ${m.homeFlag}${m.homeTeam} vs ${m.awayFlag}${m.awayTeam}${m.homeScore!==null ? ` (${m.homeScore}-${m.awayScore})` : ''}</option>`
+  ).join('');
+
+  el.innerHTML = `
+  <div class="stats-grid">
+    <div class="stat-box"><div class="stat-label">สมาชิก</div><div class="stat-val">${users.length}</div></div>
+    <div class="stat-box"><div class="stat-label">แมตช์ทั้งหมด</div><div class="stat-val">${matches.length}</div></div>
+    <div class="stat-box"><div class="stat-label">จบแล้ว</div><div class="stat-val">${finished}</div></div>
+    <div class="stat-box"><div class="stat-label">ล็อกแล้ว</div><div class="stat-val">${locked}</div></div>
+  </div>
+
+  <div class="admin-section">
+    <div class="admin-head">⚽ อัปเดตผลแมตช์ (90 นาที + ทดเวลาเท่านั้น)</div>
+    <div class="admin-body">
+      <div class="form-group" style="margin-bottom:10px">
+        <label>เลือกแมตช์</label>
+        <select id="a-match-sel" style="width:100%">${matchOptions}</select>
+      </div>
+      <div class="form-row">
+        <div class="form-group"><label>สกอร์จริง</label>
+          <div style="display:flex;align-items:center;gap:8px">
+            <input type="number" id="a-hs" min="0" max="20" value="0" style="width:52px">
+            <span style="color:var(--faint)">–</span>
+            <input type="number" id="a-as" min="0" max="20" value="0" style="width:52px">
+          </div>
+        </div>
+        <div class="form-group" style="justify-content:flex-end">
+          <label>&nbsp;</label>
+          <button class="btn-action" onclick="adminSetResult('${adminPass}')">คำนวณ & บันทึก</button>
+        </div>
+      </div>
+      <div class="msg" id="a-result-msg"></div>
+    </div>
+  </div>
+
+  <div class="admin-section">
+    <div class="admin-head">🏆 ประกาศแชมป์โลก</div>
+    <div class="admin-body">
+      <div class="form-row">
+        <div class="form-group" style="flex:1"><label>ชื่อทีมแชมป์ (ต้องตรงกับที่สมาชิกเลือก)</label>
+          <input type="text" id="a-champ" placeholder="เช่น Argentina">
+        </div>
+        <div class="form-group" style="justify-content:flex-end">
+          <label>&nbsp;</label>
+          <button class="btn-action" onclick="adminSetChampion('${adminPass}')">ให้คะแนน</button>
+        </div>
+      </div>
+      <div class="msg" id="a-champ-msg"></div>
+    </div>
+  </div>
+
+  <div class="admin-section">
+    <div class="admin-head">➕ เพิ่มแมตช์</div>
+    <div class="admin-body">
+      <div class="form-row" style="gap:6px;flex-wrap:wrap">
+        <div class="form-group"><label>เลขนัด</label><input type="number" id="a-mno" style="width:60px" value="${matches.length+1}"></div>
+        <div class="form-group"><label>ทีมเจ้าบ้าน</label><input type="text" id="a-home" placeholder="Brazil" style="width:100px"></div>
+        <div class="form-group"><label>Flag</label><input type="text" id="a-hflag" placeholder="🇧🇷" style="width:52px"></div>
+        <div class="form-group"><label>ทีมเยือน</label><input type="text" id="a-away" placeholder="France" style="width:100px"></div>
+        <div class="form-group"><label>Flag</label><input type="text" id="a-aflag" placeholder="🇫🇷" style="width:52px"></div>
+        <div class="form-group"><label>กลุ่ม</label><input type="text" id="a-grp" placeholder="Group A" style="width:80px"></div>
+        <div class="form-group"><label>Kickoff (ISO)</label><input type="datetime-local" id="a-kickoff" style="width:180px"></div>
+      </div>
+      <button class="btn-action" style="margin-top:10px" onclick="adminAddMatch('${adminPass}')">เพิ่มแมตช์</button>
+      <div class="msg" id="a-add-msg"></div>
+    </div>
+  </div>
+
+  <div class="admin-section">
+    <div class="admin-head">👥 สมาชิก (${users.length} คน)</div>
+    <div class="admin-table-wrap">
+      <table class="admin-table">
+        <thead><tr><th>#</th><th>ชื่อแสดง</th><th>Username</th><th>Role</th></tr></thead>
+        <tbody>
+          ${users.map((u,i) => `<tr>
+            <td>${i+1}</td>
+            <td>${u.displayName}</td>
+            <td><code style="font-size:12px;background:var(--gray-bg);padding:2px 6px;border-radius:4px">${u.username}</code></td>
+            <td><span style="font-size:11px;padding:2px 8px;border-radius:20px;background:${u.role==='ADMIN'?'var(--amber-bg)':'var(--gray-bg)'};color:${u.role==='ADMIN'?'var(--amber-text)':'var(--faint)'}">${u.role}</span></td>
+          </tr>`).join('')}
+        </tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+async function adminSetResult(adminPass) {
+  const matchId = document.getElementById('a-match-sel').value;
+  const hs = parseInt(document.getElementById('a-hs').value) || 0;
+  const as_ = parseInt(document.getElementById('a-as').value) || 0;
+  const msg = document.getElementById('a-result-msg');
+  msg.textContent = '⏳ กำลังบันทึก...'; msg.className = 'msg';
+
+  const r = await api({ action:'setResult', matchId, homeScore:hs, awayScore:as_, adminPassword:adminPass });
+  msg.textContent = r.ok ? `✓ บันทึกแล้ว · คำนวณคะแนน ${r.updated} คน` : '❌ ' + r.error;
+  msg.className = r.ok ? 'msg ok' : 'msg err';
+  if (r.ok) setTimeout(() => loadAdmin(), 1500);
+}
+
+async function adminSetChampion(adminPass) {
+  const champ = document.getElementById('a-champ').value.trim();
+  const msg = document.getElementById('a-champ-msg');
+  if (!champ) { msg.textContent = '❌ กรอกชื่อทีม'; msg.className = 'msg err'; return; }
+  const r = await api({ action:'setChampionWinner', champion:champ, adminPassword:adminPass });
+  msg.textContent = r.ok ? `✓ ให้คะแนนแล้ว · ถูก ${r.awarded} คน` : '❌ ' + r.error;
+  msg.className = r.ok ? 'msg ok' : 'msg err';
+}
+
+async function adminAddMatch(adminPass) {
+  const msg = document.getElementById('a-add-msg');
+  const kickoffLocal = document.getElementById('a-kickoff').value;
+  if (!kickoffLocal) { msg.textContent = '❌ กรุณาใส่เวลา Kickoff'; msg.className = 'msg err'; return; }
+
+  const r = await api({
+    action: 'addMatch', adminPassword: adminPass,
+    matchNo: parseInt(document.getElementById('a-mno').value),
+    homeTeam: document.getElementById('a-home').value.trim(),
+    awayTeam: document.getElementById('a-away').value.trim(),
+    homeFlag: document.getElementById('a-hflag').value.trim(),
+    awayFlag: document.getElementById('a-aflag').value.trim(),
+    group: document.getElementById('a-grp').value.trim(),
+    round: 'GROUP',
+    kickoffAt: new Date(kickoffLocal).toISOString(),
+  });
+  msg.textContent = r.ok ? '✓ เพิ่มแมตช์แล้ว' : '❌ ' + r.error;
+  msg.className = r.ok ? 'msg ok' : 'msg err';
+  if (r.ok) setTimeout(() => loadAdmin(), 1500);
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+let toastTimer;
+function showToast(msg) {
+  const el = document.getElementById('toast');
+  el.textContent = msg;
+  el.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), 2500);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+(function init() {
+  // Enter key on login
+  ['inp-user','inp-pass'].forEach(id => {
+    document.getElementById(id).addEventListener('keydown', e => {
+      if (e.key === 'Enter') doLogin();
+    });
+  });
+
+  // ตรวจ session ที่เก็บไว้
+  const saved = load('user');
+  if (saved) {
+    state.user = saved;
+    startApp();
+  }
+})();
+</script>
+</body>
+</html>
