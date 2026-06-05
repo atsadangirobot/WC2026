@@ -263,8 +263,10 @@ let S = { user:null, matches:[], champPick:null, selTeam:null, timers:[] };
 let _cbId = 0;
 function apiCall(params, cb) {
   const cbName = '_wc' + (++_cbId);
-  const payload = btoa(unescape(encodeURIComponent(JSON.stringify(params))));
-  const url = API + '?payload=' + encodeURIComponent(payload) + '&callback=' + cbName;
+  // encode JSON → UTF-8 bytes → base64 → URL-encode ให้ครบ (ไม่มี + หรือ / หลุดไป)
+  const jsonStr = JSON.stringify(params);
+  const b64 = btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g, (_,p1) => String.fromCharCode('0x'+p1)));
+  const url = API + '?payload=' + encodeURIComponent(b64) + '&callback=' + cbName;
 
   window[cbName] = function(data) {
     delete window[cbName];
