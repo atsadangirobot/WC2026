@@ -261,15 +261,16 @@ const AV = [['#dbeafe','#1e40af'],['#dcfce7','#166534'],['#fef3c7','#92400e'],['
 let S = { user:null, matches:[], champPick:null, selTeam:null, timers:[] };
 
 // ============================================================
-// JSONP — วิธีเดียวที่ทำงานได้จาก static HTML กับ Apps Script
+// JSONP — ส่ง action + params แต่ละตัวเป็น query string ตรงๆ
+// (ต้องตรงกับ decodePayload ใน Code.gs ที่อ่าน p.action ตรงๆ ไม่ใช่ base64)
 // ============================================================
 let _cbId = 0;
 function apiCall(params, cb) {
   const cbName = '_wc' + (++_cbId);
-  // encode JSON → UTF-8 bytes → base64 → URL-encode ให้ครบ (ไม่มี + หรือ / หลุดไป)
-  const jsonStr = JSON.stringify(params);
-  const b64 = btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g, (_,p1) => String.fromCharCode('0x'+p1)));
-  const url = API + '?payload=' + encodeURIComponent(b64) + '&callback=' + cbName;
+  const qs = Object.entries(params)
+    .map(([k,v]) => encodeURIComponent(k) + '=' + encodeURIComponent(typeof v === 'object' ? JSON.stringify(v) : v))
+    .join('&');
+  const url = API + '?' + qs + '&callback=' + cbName;
 
   window[cbName] = function(data) {
     delete window[cbName];
