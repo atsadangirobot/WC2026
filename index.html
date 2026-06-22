@@ -196,9 +196,9 @@ main{max-width:700px;margin:0 auto;padding:14px 12px 40px}
         <div class="rr"><span class="rpts" style="background:var(--gray-bg);color:var(--faint)">0</span><span>ไม่ทาย / ทายหลัง Kickoff</span></div>
       </div>
       <div class="rs"><div class="rh">🏆 โบนัสทายแชมป์</div>
-        <div class="rr"><span class="rpts" style="background:var(--amber-bg);color:var(--amber-text)">+15</span><span>ถูกต้อง ก่อนจบรอบแบ่งกลุ่ม (ก่อน 27 มิ.ย.)</span></div>
-        <div class="rr"><span class="rpts" style="background:var(--amber-bg);color:var(--amber-text)">+10</span><span>ถูกต้อง ก่อนจบรอบ 16 ทีม (ก่อน 9 ก.ค.)</span></div>
-        <div class="rr"><span class="rpts" style="background:var(--amber-bg);color:var(--amber-text)">+6</span><span>ถูกต้อง ก่อนจบรอบ 8 ทีม (ก่อน 19 ก.ค.)</span></div>
+        <div class="rr"><span class="rpts" style="background:var(--amber-bg);color:var(--amber-text)">+15</span><span>ถูกต้อง ก่อนจบรอบแบ่งกลุ่ม (ก่อน 29 มิ.ย.)</span></div>
+        <div class="rr"><span class="rpts" style="background:var(--amber-bg);color:var(--amber-text)">+10</span><span>ถูกต้อง ก่อนจบรอบ 16 ทีม (ก่อน 5 ก.ค.)</span></div>
+        <div class="rr"><span class="rpts" style="background:var(--amber-bg);color:var(--amber-text)">+6</span><span>ถูกต้อง ก่อนจบรอบ 8 ทีม (ก่อน 14 ก.ค.)</span></div>
       </div>
       <div class="rs"><div class="rh">📋 หมายเหตุ</div>
         <div class="rr" style="display:block;padding:11px 14px;font-size:13px;line-height:1.8;color:var(--text)">
@@ -229,27 +229,30 @@ main{max-width:700px;margin:0 auto;padding:14px 12px 40px}
 const API = 'https://script.google.com/macros/s/AKfycbxNWooQHmIUOJu2Njv1XSpVBu3ndliWleHxTDfEH-SnEEFJeVOzLJKdxgXopTlFC2OA/exec';
 
 const CHAMP_DL = {
-  ROUND1: new Date('2026-06-27T00:00:00+07:00'),
-  ROUND2: new Date('2026-07-09T00:00:00+07:00'),
-  ROUND3: new Date('2026-07-19T00:00:00+07:00'),
+  ROUND1: new Date('2026-06-29T00:00:00+07:00'),
+  ROUND2: new Date('2026-07-05T00:00:00+07:00'),
+  ROUND3: new Date('2026-07-14T00:00:00+07:00'),
 };
 const ROUND_LABEL = {
   GROUP:'รอบแบ่งกลุ่ม', R32:'รอบ 32 ทีม', R16:'รอบ 16 ทีม',
   QF:'รอบ 8 ทีม', SF:'รอบรองชนะเลิศ', THIRD:'ชิงอันดับ 3', FINAL:'รอบชิงชนะเลิศ',
 };
 const WC_TEAMS = [
-  {n:'Mexico',f:'🇲🇽'},{n:'Jamaica',f:'🇯🇲'},{n:'Venezuela',f:'🇻🇪'},{n:'Ecuador',f:'🇪🇨'},
-  {n:'USA',f:'🇺🇸'},{n:'Panama',f:'🇵🇦'},{n:'Uruguay',f:'🇺🇾'},{n:'Bolivia',f:'🇧🇴'},
-  {n:'Canada',f:'🇨🇦'},{n:'Honduras',f:'🇭🇳'},{n:'Colombia',f:'🇨🇴'},{n:'Brazil',f:'🇧🇷'},
-  {n:'Argentina',f:'🇦🇷'},{n:'Morocco',f:'🇲🇦'},{n:'Iraq',f:'🇮🇶'},{n:'Ukraine',f:'🇺🇦'},
-  {n:'Spain',f:'🇪🇸'},{n:'Serbia',f:'🇷🇸'},{n:'Bahrain',f:'🇧🇭'},{n:'Switzerland',f:'🇨🇭'},
-  {n:'Portugal',f:'🇵🇹'},{n:'Czech Republic',f:'🇨🇿'},{n:'Nigeria',f:'🇳🇬'},{n:'Angola',f:'🇦🇴'},
-  {n:'Germany',f:'🇩🇪'},{n:'Saudi Arabia',f:'🇸🇦'},{n:'South Korea',f:'🇰🇷'},{n:'Cameroon',f:'🇨🇲'},
-  {n:'Netherlands',f:'🇳🇱'},{n:'Senegal',f:'🇸🇳'},{n:'Azerbaijan',f:'🇦🇿'},{n:'New Zealand',f:'🇳🇿'},
-  {n:'France',f:'🇫🇷'},{n:'Japan',f:'🇯🇵'},{n:'Chile',f:'🇨🇱'},{n:'Australia',f:'🇦🇺'},
-  {n:'England',f:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'},{n:'Belgium',f:'🇧🇪'},{n:'Tunisia',f:'🇹🇳'},{n:'Algeria',f:'🇩🇿'},
-  {n:'Croatia',f:'🇭🇷'},{n:'Italy',f:'🇮🇹'},{n:'Poland',f:'🇵🇱'},{n:'Ivory Coast',f:'🇨🇮'},
-  {n:'Turkey',f:'🇹🇷'},{n:'Iran',f:'🇮🇷'},{n:'Qatar',f:'🇶🇦'},{n:'Uzbekistan',f:'🇺🇿'},
+  // Group A-D (North/Central America hosts + draw)
+  {n:'Mexico',f:'🇲🇽'},{n:'South Korea',f:'🇰🇷'},{n:'Czechia',f:'🇨🇿'},{n:'South Africa',f:'🇿🇦'},
+  {n:'Canada',f:'🇨🇦'},{n:'Bosnia & Herz.',f:'🇧🇦'},{n:'Switzerland',f:'🇨🇭'},{n:'Qatar',f:'🇶🇦'},
+  {n:'Brazil',f:'🇧🇷'},{n:'Morocco',f:'🇲🇦'},{n:'Scotland',f:'🏴󠁧󠁢󠁳󠁣󠁴󠁿'},{n:'Haiti',f:'🇭🇹'},
+  {n:'USA',f:'🇺🇸'},{n:'Paraguay',f:'🇵🇾'},{n:'Australia',f:'🇦🇺'},{n:'Türkiye',f:'🇹🇷'},
+  // Group E-H
+  {n:'Germany',f:'🇩🇪'},{n:'Curaçao',f:'🇨🇼'},{n:'Ivory Coast',f:'🇨🇮'},{n:'Ecuador',f:'🇪🇨'},
+  {n:'Netherlands',f:'🇳🇱'},{n:'Japan',f:'🇯🇵'},{n:'Sweden',f:'🇸🇪'},{n:'Tunisia',f:'🇹🇳'},
+  {n:'Belgium',f:'🇧🇪'},{n:'Egypt',f:'🇪🇬'},{n:'Iran',f:'🇮🇷'},{n:'New Zealand',f:'🇳🇿'},
+  {n:'Spain',f:'🇪🇸'},{n:'Cape Verde',f:'🇨🇻'},{n:'Uruguay',f:'🇺🇾'},{n:'Saudi Arabia',f:'🇸🇦'},
+  // Group I-L
+  {n:'France',f:'🇫🇷'},{n:'Senegal',f:'🇸🇳'},{n:'Norway',f:'🇳🇴'},{n:'Iraq',f:'🇮🇶'},
+  {n:'Argentina',f:'🇦🇷'},{n:'Austria',f:'🇦🇹'},{n:'Algeria',f:'🇩🇿'},{n:'Jordan',f:'🇯🇴'},
+  {n:'Portugal',f:'🇵🇹'},{n:'DR Congo',f:'🇨🇩'},{n:'Colombia',f:'🇨🇴'},{n:'Uzbekistan',f:'🇺🇿'},
+  {n:'England',f:'🏴󠁧󠁢󠁥󠁮󠁧󠁿'},{n:'Croatia',f:'🇭🇷'},{n:'Ghana',f:'🇬🇭'},{n:'Panama',f:'🇵🇦'},
 ];
 const AV = [['#dbeafe','#1e40af'],['#dcfce7','#166534'],['#fef3c7','#92400e'],['#fce7f3','#9d174d'],
   ['#ede9fe','#4c1d95'],['#ffedd5','#9a3412'],['#d1fae5','#065f46'],['#fee2e2','#991b1b'],
@@ -258,17 +261,15 @@ const AV = [['#dbeafe','#1e40af'],['#dcfce7','#166534'],['#fef3c7','#92400e'],['
 let S = { user:null, matches:[], champPick:null, selTeam:null, timers:[] };
 
 // ============================================================
-// JSONP — ส่ง action + params แต่ละตัวเป็น query string ตรงๆ
-// ไม่ใช้ base64 เพื่อหลีกเลี่ยงปัญหา encode/decode
+// JSONP — วิธีเดียวที่ทำงานได้จาก static HTML กับ Apps Script
 // ============================================================
 let _cbId = 0;
 function apiCall(params, cb) {
   const cbName = '_wc' + (++_cbId);
-  // ส่งแต่ละ field เป็น query param ตรงๆ + ส่ง json ด้วยเพื่อ backup
-  const qs = Object.entries(params)
-    .map(([k,v]) => encodeURIComponent(k) + '=' + encodeURIComponent(typeof v === 'object' ? JSON.stringify(v) : v))
-    .join('&');
-  const url = API + '?' + qs + '&callback=' + cbName;
+  // encode JSON → UTF-8 bytes → base64 → URL-encode ให้ครบ (ไม่มี + หรือ / หลุดไป)
+  const jsonStr = JSON.stringify(params);
+  const b64 = btoa(encodeURIComponent(jsonStr).replace(/%([0-9A-F]{2})/g, (_,p1) => String.fromCharCode('0x'+p1)));
+  const url = API + '?payload=' + encodeURIComponent(b64) + '&callback=' + cbName;
 
   window[cbName] = function(data) {
     delete window[cbName];
@@ -413,15 +414,17 @@ function renderMatches(el) {
     byRound[k].push(m);
   });
 
+  const byTime = (a,b) => new Date(a.kickoffAt) - new Date(b.kickoffAt);
+
   let h = '';
   roundOrder.forEach(rnd => {
     if (!byRound[rnd] || !byRound[rnd].length) return;
     const matches = byRound[rnd];
 
-    // แยก upcoming / locked-waiting / finished
-    const upcoming = matches.filter(m => !m.locked && new Date(m.kickoffAt) > now);
-    const waiting  = matches.filter(m => m.locked && m.homeScore === null);
-    const finished = matches.filter(m => m.homeScore !== null).reverse();
+    // แยก upcoming / locked-waiting / finished — เรียงตามเวลาแข่งขันทุกกลุ่ม
+    const upcoming = matches.filter(m => !m.locked && new Date(m.kickoffAt) > now).sort(byTime);
+    const waiting  = matches.filter(m => m.locked && m.homeScore === null).sort(byTime);
+    const finished = matches.filter(m => m.homeScore !== null).sort(byTime).reverse(); // จบล่าสุดอยู่บนสุด
 
     if (!upcoming.length && !waiting.length && !finished.length) return;
 
@@ -574,9 +577,9 @@ function renderChamp(el) {
   const pick = S.champPick;
   const alreadyLocked = pick && pick.roundLocked !== cr;
   const rInfo = [
-    { k:'ROUND1', label:'ก่อนจบรอบแบ่งกลุ่ม', pts:'+15', date:'ก่อน 27 มิ.ย.' },
-    { k:'ROUND2', label:'ก่อนจบรอบ 16 ทีม',   pts:'+10', date:'ก่อน 9 ก.ค.' },
-    { k:'ROUND3', label:'ก่อนจบรอบ 8 ทีม',    pts:'+6',  date:'ก่อน 19 ก.ค.' },
+    { k:'ROUND1', label:'ก่อนจบรอบแบ่งกลุ่ม', pts:'+15', date:'ก่อน 29 มิ.ย.' },
+    { k:'ROUND2', label:'ก่อนจบรอบ 16 ทีม',   pts:'+10', date:'ก่อน 5 ก.ค.' },
+    { k:'ROUND3', label:'ก่อนจบรอบ 8 ทีม',    pts:'+6',  date:'ก่อน 14 ก.ค.' },
   ];
 
   let h = '<div class="champ-rounds">';
